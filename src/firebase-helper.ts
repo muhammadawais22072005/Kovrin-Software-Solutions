@@ -1,7 +1,29 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore, collection, addDoc, serverTimestamp, doc, getDocFromServer, getDocs, query, orderBy, limit } from "firebase/firestore";
-import firebaseConfig from "./firebase-applet-config.json";
 import { InquiryFormData } from "./types";
+
+// Safe dynamic lookup via import.meta.glob so compilation never fails when this ignore-listed file is missing on Github
+const configs = (import.meta as any).glob("./firebase-applet-config.json", { eager: true });
+const loadedConfig = configs["./firebase-applet-config.json"]
+  ? (configs["./firebase-applet-config.json"] as any).default
+  : null;
+
+// Safe helper to grab environment variables loaded via Vite or server env
+const loadFirebaseConfig = () => {
+  const env = (import.meta as any).env || {};
+  return {
+    apiKey: env.VITE_FIREBASE_API_KEY || loadedConfig?.apiKey || "",
+    projectId: env.VITE_FIREBASE_PROJECT_ID || loadedConfig?.projectId || "",
+    appId: env.VITE_FIREBASE_APP_ID || loadedConfig?.appId || "",
+    authDomain: env.VITE_FIREBASE_AUTH_DOMAIN || loadedConfig?.authDomain || "",
+    storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET || loadedConfig?.storageBucket || "",
+    messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID || loadedConfig?.messagingSenderId || "",
+    measurementId: env.VITE_FIREBASE_MEASUREMENT_ID || loadedConfig?.measurementId || "",
+    firestoreDatabaseId: env.VITE_FIREBASE_FIRESTORE_DATABASE_ID || loadedConfig?.firestoreDatabaseId || "",
+  };
+};
+
+const firebaseConfig = loadFirebaseConfig();
 
 export enum OperationType {
   CREATE = "create",
@@ -40,7 +62,7 @@ if (isFirebaseActive) {
     const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
     
     // Support custom Firestore Database IDs if set
-    const dbId = (firebaseConfig as any).firestoreDatabaseId;
+    const dbId = firebaseConfig.firestoreDatabaseId;
     if (dbId && dbId !== "(default)" && dbId !== "") {
       dbInstance = getFirestore(app, dbId);
     } else {
