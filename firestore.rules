@@ -1,0 +1,49 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net (default-deny catch-all)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Validation primitives
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+
+    function incoming() { 
+      return request.resource.data; 
+    }
+
+    function isValidInquiry(data) {
+      return data.keys().hasAll(['name', 'contactNumber', 'email', 'description', 'createdAt'])
+        && data.keys().size() == 5
+        && data.name is string 
+        && data.name.size() >= 1 
+        && data.name.size() <= 200
+        && data.contactNumber is string 
+        && data.contactNumber.size() >= 1 
+        && data.contactNumber.size() <= 100
+        && data.email is string 
+        && data.email.size() >= 3 
+        && data.email.size() <= 250
+        && data.description is string 
+        && data.description.size() >= 1 
+        && data.description.size() <= 5000;
+    }
+
+    // Inquiries Collection rules
+    match /inquiries/{inquiryId} {
+      // Allow read and list so the user can see inquiries right on their live dashboard.
+      allow read, list: if true;
+      
+      // Permit anonymous creations so any new prospect can submit without registration,
+      // but run rigorous schema validations to prevent Denial-of-Wallet and resource poisoning
+      allow create: if isValidInquiry(incoming());
+      
+      // Prevent client-side updates or deletions on already submitted inquiries
+      allow update, delete: if false;
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Kovrin Software Solutions",
+  "description": "Professional minimalistic dark theme scrolling website with a responsive services grid, interactive inquiry form, and copy-pasteable Flutter code exporter.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

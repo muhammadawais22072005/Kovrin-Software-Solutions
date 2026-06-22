@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Custom aesthetic styles mimicking circuit grid details */
+.grid-bg {
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(6, 13, 10, 0.95), rgba(3, 6, 5, 1)),
+    linear-gradient(rgba(10, 25, 18, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 25, 18, 0.08) 1px, transparent 1px);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+}
+
+.subtle-glow {
+  box-shadow: 0 0 40px -10px rgba(92, 184, 92, 0.15);
+}
+
+.text-gold-green-gradient {
+  background: linear-gradient(135deg, #ffd54f 0%, #a0e0c0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030605;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0d1e16;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1e3f2e;
+}
